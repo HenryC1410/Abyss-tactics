@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Abyss Tactics
 
-## Getting Started
+Abyss Tactics es un prototipo de juego de rol (RPG) y estrategia de cartas por turnos desarrollado en la web. El jugador asume el rol de un estratega que debe gestionar su energía y puntos de salud para neutralizar anomalías (monstruos) utilizando un mazo de cartas tácticas.
 
-First, run the development server:
+Este proyecto fue desarrollado como práctica de la materia de Desarrollo Web I - 2026(1).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Características Principales
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Desarrollo de Interfaces (UI/UX):** Interfaz gráfica interactiva y responsiva construida con el framework **Next.js (React)** y estilizada con **Tailwind CSS**.
+- **Almacenamiento Local:** 
+  - Uso de `localStorage` para el guardado de progreso rápido (nivel actual, racha de victorias, configuración).
+  - Uso de `IndexedDB` para la persistencia del inventario de cartas y datos estructurados del jugador.
+- **Despliegue Continuo (CI/CD):** El proyecto está publicado en un hosting gratuito y se actualiza progresivamente mediante control de versiones.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Stack Tecnológico
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Estilos:** Tailwind CSS
+- **Despliegue:** [Vercel](https://vercel.com)
+- **Control de Versiones:** Git / GitHub
 
-## Learn More
+## Instalación y Uso Local
 
-To learn more about Next.js, take a look at the following resources:
+Si deseas correr este proyecto en tu entorno local, sigue estos pasos:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Clona el repositorio:
+   ```bash
+   git clone [https://github.com/HenryC1410/Abyss-tactics.git](https://github.com/HenryC1410/Abyss-tactics.git)
