@@ -1,6 +1,7 @@
 "use client";
 import localFont from 'next/font/local';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import Logo from "@/components/logo";
 
 const miFuentePersonalizada = localFont({
   src: './fonts/IcelandWinterstorm.otf', 
@@ -10,21 +11,33 @@ const miFuentePersonalizada = localFont({
 export default function Home() {
   const audioRef = useRef(null);
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.5;
+
+      audioRef.current.play().catch((error) => {
+        console.warn("Error al reproducir el audio:", error);
+      });
+    }
+  }, []);
+
   const handleInteraction = () => {
     if (audioRef.current && audioRef.current.paused) {
       audioRef.current.play();
-      audioRef.current.volume = 0.5; 
     }
   };
+
 
   return (
     <main 
       className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-8 relative overflow-hidden"
       onClick={handleInteraction} 
     >
-      <audio ref={audioRef} src="/Blessed to kill.ogg" loop />
+      <audio ref={audioRef} src="/Blessed to kill.ogg" loop autoPlay/>
 
       <div className="z-10 flex flex-col items-center w-full max-w-4xl">
+
+        <Logo className="w-32 h-32 md:w-40 md:h-40 -mb-4 relative z-20 animate-bounce [animation-duration:4s]" />
 
         <h1 className={`${miFuentePersonalizada.className} text-7xl md:text-[8rem] leading-none text-white tracking-wider text-center drop-shadow-[0_10px_10px_rgba(0,0,0,0.9)] relative z-10 -mb-16 md:-mb-15`}>
           Abyss Tactics
