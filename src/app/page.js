@@ -32,7 +32,7 @@ export default function Home() {
 
         <div className="w-full max-w-[750px] relative z-0 mb-12 flex justify-center">
           <img 
-            src="/cards_hearts.gif" 
+            src="/Cards_Hearts.gif" 
             alt="Fondo de cartas dinámico" 
             className="w-full h-auto object-contain opacity-85"
           />
