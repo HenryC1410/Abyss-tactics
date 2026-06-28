@@ -1,0 +1,28 @@
+
+.highlightCard {
+  animation: pulseGlow 2s infinite;
+  cursor: pointer;
+  position: relative;
+  z-index: 20;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); transform: translateY(0) scale(1); }
+  50% { box-shadow: 0 0 35px rgba(239, 68, 68, 1); transform: translateY(-10px) scale(1.05); }
+  100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); transform: translateY(0) scale(1); }
+}
+
+/* Oscurecer las cartas que no se pueden usar en el tutorial */
+.dimmedCard {
+  opacity: 0.4;
+  pointer-events: none;
+  filter: grayscale(80%);
+}
+
+/* El cuadro de diálogo del mentor */
+.tutorialBox {
+  background-color: rgba(3, 7, 18, 0.9);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  backdrop-filter: blur(8px);
+}

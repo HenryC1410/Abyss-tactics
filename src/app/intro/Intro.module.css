@@ -30,6 +30,7 @@
 
 .btnConfirm:hover {
   background-color: #991b1b;
+  cursor: pointer;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
 }
@@ -42,4 +43,5 @@
 .btnNext:hover {
   background-color: #334155;
   transform: translateY(-2px);
+  cursor: pointer;
 }

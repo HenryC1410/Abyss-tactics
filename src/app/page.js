@@ -8,6 +8,7 @@ import styles from './Home.module.css';
 const miFuentePersonalizada = localFont({
   src: './fonts/IcelandWinterstorm.otf', 
   display: 'swap',
+  preload: false,
 });
 
 export default function Home() {
@@ -43,7 +44,7 @@ export default function Home() {
 
         <div className="w-full max-w-[750px] relative z-0 mb-12 flex justify-center pointer-events-none">
           <img 
-            src="/Cards_Hearts.gif" 
+            src="/cards_hearts.gif" 
             alt="Fondo de cartas dinámico" 
             className="w-full h-auto object-contain opacity-85"
           />
