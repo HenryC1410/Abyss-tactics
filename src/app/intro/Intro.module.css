@@ -1,0 +1,45 @@
+
+.bgOverlay {  
+  background: radial-gradient(ellipse at center, #0f172a, #000000, #000000);
+  opacity: 0.8;
+}
+
+.dialogBox {
+  background-color: rgba(3, 7, 18, 0.8);
+  border: 1px solid #334155;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.inputName {
+  background-color: #000000;
+  border: 1px solid #334155;
+  transition: all 0.3s ease;
+}
+
+.inputName:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+
+.btnConfirm {
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btnConfirm:hover {
+  background-color: #991b1b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+}
+
+.btnNext {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btnNext:hover {
+  background-color: #334155;
+  transform: translateY(-2px);
+}

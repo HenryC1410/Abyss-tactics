@@ -1,45 +1,41 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import styles from './Intro.module.css';
 
 export default function IntroVisualNovel() {
   const router = useRouter();
   
-
   const [currentFrame, setCurrentFrame] = useState(0);
-  const [playerName, setPlayerName] = useState("Griff");
-  
+  const [playerName, setPlayerName] = useState("Griff"); 
   const [isVisible, setIsVisible] = useState(true);
-
 
   const storyFrames = [
     {
       type: "input",
-      title: "Registro de Mando",
-      text: "El Abismo se ha abierto. Necesitamos un comandante para liderar la vanguardia. ¿Cuál es tu designación de combate?",
+      title: "Gremio de Cazadores",
+      text: "El Rey ha caído gravemente enfermo. La única cura requiere un ingrediente botánico que solo florece en las profundidades del Abismo. Cazador, ¿cómo debemos registrarte en el manifiesto?",
     },
     {
       type: "story",
-      title: "Año 2084 - Las Grietas",
-      text: `Entendido, ${playerName}. Las anomalías han empezado a cruzar desde el otro lado. Nuestro núcleo de energía es lo único que mantiene la barrera en pie.`,
+      title: "La Gran Mazmorra",
+      text: `Escucha bien, ${playerName}. Deberás descender a través de 16 niveles infestados de anomalías y bestias. Como estratega, cada paso en falso podría ser el último. Tu misión es neutralizarlas y recuperar el ítem.`,
     },
     {
       type: "story",
-      title: "Protocolo de Defensa",
-      text: "Te hemos asignado un mazo de tácticas abisales. Úsalas con sabiduría. Tu primera prueba está por comenzar... Prepárate para el combate.",
+      title: "El Grimorio Táctico",
+      text: "No sobrevivirás solo con acero. Para defenderte, usarás un mazo de cartas que representan habilidades mágicas ancestrales. Administra tu energía y destruye a los monstruos. El descenso comienza ahora.",
     }
   ];
 
-  
   const nextFrame = () => {
-    setIsVisible(false);
+    setIsVisible(false); 
     
     setTimeout(() => {
       if (currentFrame < storyFrames.length - 1) {
         setCurrentFrame(currentFrame + 1);
         setIsVisible(true); 
       } else {
-        
         localStorage.setItem("abyssPlayerName", playerName);
         router.push('/arena');
       }
@@ -50,12 +46,12 @@ export default function IntroVisualNovel() {
 
   return (
     <main className="min-h-screen bg-black flex flex-col items-center justify-center p-8 relative">
-     
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-80"></div>
+      {/* 2. Fondo optimizado con CSS */}
+      <div className={`absolute inset-0 ${styles.bgOverlay}`}></div>
 
-      
+      {/* 3. Cuadro de diálogo modular */}
       <div 
-        className={`z-10 w-full max-w-3xl bg-slate-950/80 border border-slate-700 p-8 rounded-lg shadow-[0_0_30px_rgba(0,0,0,0.8)] backdrop-blur-sm transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+        className={`z-10 w-full max-w-3xl p-8 rounded-lg transition-opacity duration-500 ${styles.dialogBox} ${isVisible ? 'opacity-100' : 'opacity-0'}`}
       >
         <h2 className="text-red-500 text-xl font-bold uppercase tracking-widest border-b border-slate-800 pb-4 mb-6">
           {frame.title}
@@ -65,30 +61,29 @@ export default function IntroVisualNovel() {
           {frame.text}
         </p>
 
-        
         {frame.type === "input" ? (
           <div className="flex flex-col gap-4">
             <input 
               type="text" 
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              className="bg-black border border-slate-700 text-white px-4 py-3 rounded focus:outline-none focus:border-red-500 text-lg"
+              className={`text-white px-4 py-3 rounded focus:outline-none text-lg font-bold tracking-wider ${styles.inputName}`}
               placeholder="Ingresa tu nombre..."
             />
             <button 
               onClick={nextFrame}
-              className="bg-red-950 hover:bg-red-800 text-red-100 font-bold py-3 px-6 rounded border border-red-700 transition-all self-end uppercase tracking-wider"
+              className={`bg-red-950 text-red-100 font-bold py-3 px-6 rounded border border-red-700 uppercase tracking-wider self-end ${styles.btnConfirm}`}
             >
-              Confirmar Identidad
+              Confirmar Registro
             </button>
           </div>
         ) : (
           <div className="flex justify-end">
             <button 
               onClick={nextFrame}
-              className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded border border-slate-600 transition-all uppercase tracking-wider"
+              className={`bg-slate-800 text-white font-bold py-3 px-6 rounded border border-slate-600 uppercase tracking-wider ${styles.btnNext}`}
             >
-              {currentFrame === storyFrames.length - 1 ? "Iniciar Tutorial" : "Siguiente >"}
+              {currentFrame === storyFrames.length - 1 ? "Entrar a la Mazmorra" : "Siguiente >"}
             </button>
           </div>
         )}
