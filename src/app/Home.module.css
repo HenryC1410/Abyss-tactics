@@ -1,0 +1,40 @@
+
+.titleGlow {
+  font-size: 5rem;
+  line-height: 1;
+  text-shadow: 0 10px 10px rgba(0, 0, 0, 0.9);
+  margin-bottom: -4rem; 
+  z-index: 10;
+  position: relative;
+  pointer-events: none;
+}
+
+
+@media (min-width: 768px) {
+  .titleGlow {
+    font-size: 7rem;
+    margin-bottom: -6rem; 
+  }
+}
+
+
+.btnStart {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.btnStart:hover {
+  box-shadow: 0 10px 25px rgba(153, 27, 27, 0.6); 
+  transform: translateY(-4px);
+}
+
+
+.btnRanking {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.btnRanking:hover {
+  box-shadow: 0 10px 25px rgba(30, 41, 59, 0.8);
+  transform: translateY(-4px);
+}
