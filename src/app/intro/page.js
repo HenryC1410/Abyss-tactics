@@ -64,7 +64,7 @@ export default function IntroVisualNovel() {
       <div 
         className={`z-10 w-full max-w-3xl p-8 rounded-lg transition-opacity duration-500 ${styles.dialogBox} ${isVisible ? 'opacity-100' : 'opacity-0'}`}
       >
-        <h2 className={`${fuenteHistoria.className} text-red-500 text-xl font-bold uppercase tracking-widest border-b border-slate-800 pb-4 mb-6`}>
+        <h2 className={`${fuenteHistoria.className} text-orange-500 text-xl font-bold uppercase tracking-widest border-b border-slate-800 pb-4 mb-6`}>
           {frame.title}
         </h2>
         
