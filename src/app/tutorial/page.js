@@ -1,132 +1,401 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import localFont from 'next/font/local';
 import GameCard from "@/components/GameCard";
 import styles from './Tutorial.module.css';
 
+const fuenteHistoria = localFont({
+  src: '../fonts/Qindret Demo.otf',
+  display: 'swap',
+});
+
+
+export const cardDatabase = [
+  { id: 'a1', name: "Golpe Sombrío",     type: "ataque",     cost: 2, effectValue: 20,  description: "Causa 20 pts de daño básico a la anomalía." },
+  { id: 'a2', name: "Tajo de Hierro",    type: "ataque",     cost: 2, effectValue: 25,  description: "Causa 25 pts de daño directo." },
+  { id: 'a3', name: "Estocada Abisal",   type: "ataque",     cost: 3, effectValue: 35,  description: "Causa 35 pts de daño penetrante." },
+  { id: 'a4', name: "Corte Penumbrante", type: "ataque",     cost: 3, effectValue: 40,  description: "Causa 40 pts de daño severo." },
+  { id: 'a5', name: "Furia del Cazador", type: "ataque",     cost: 4, effectValue: 55,  description: "Ataque pesado. Causa 55 pts de daño masivo." },
+  { id: 'e1', name: "Égida Menor",       type: "defensa",    cost: 1, effectValue: 15,  description: "Bloquea 15 pts de daño enemigo." },
+  { id: 'e2', name: "Reflejo Táctico",   type: "defensa",    cost: 1, effectValue: 20,  description: "Bloquea 20 pts de daño rápidamente." },
+  { id: 'e3', name: "Barrera de Éter",   type: "defensa",    cost: 2, effectValue: 30,  description: "Levanta un muro que bloquea 30 pts de daño." },
+  { id: 'e4', name: "Muro de Piedra",    type: "defensa",    cost: 2, effectValue: 35,  description: "Bloquea 35 pts de daño físico." },
+  { id: 'e5', name: "Escudo Abisal",     type: "defensa",    cost: 3, effectValue: 50,  description: "Protección total. Bloquea 50 pts de daño." },
+  { id: 'h1', name: "Visión Estratégica",type: "habilidad",  cost: 2, effectValue: 0,   description: "Roba 2 cartas adicionales del mazo." },
+  { id: 'h2', name: "Grito de Guerra",   type: "habilidad",  cost: 3, effectValue: 0,   description: "Tu próximo ataque inflige el doble de daño." },
+  { id: 'd1', name: "Ira del Rey Caído", type: "definitiva", cost: 7, effectValue: 100, description: "Causa 100 pts de daño letal instantáneo." },
+];
+
 export default function TutorialBattle() {
   const router = useRouter();
-  
-  const [step, setStep] = useState(0);
   const [playerName, setPlayerName] = useState("Griff");
-  const [monsterHp, setMonsterHp] = useState(15); // Vida de la anomalía
+  const [mounted, setMounted] = useState(false);
 
-  // Recuperamos el nombre que guardaste en la introducción
+ 
+  const enemyRef    = useRef(null);
+  const playerHudRef = useRef(null);
+  const enemyDmgRef  = useRef(null); 
+  const playerDmgRef = useRef(null); 
+
+  
+  const [step, setStep]               = useState(0);
+  const [monsterHp, setMonsterHp]     = useState(100);
+  const [playerHp, setPlayerHp]       = useState(50);
+  const [playerShield, setPlayerShield] = useState(0);
+  const [energy, setEnergy]           = useState(10);
+  const [systemMessage, setSystemMessage] = useState("");
+  const [isEnemyTurn, setIsEnemyTurn] = useState(false);
+  const [showImpact, setShowImpact]   = useState(false);
+
+  
+  const [displayText, setDisplayText] = useState("");
+  const [isTyping, setIsTyping]       = useState(false);
+  const intervalRef = useRef(null);
+
+  const [hand, setHand] = useState([
+    cardDatabase.find(c => c.id === 'a4'),
+    cardDatabase.find(c => c.id === 'a1'),
+    cardDatabase.find(c => c.id === 'e1'),
+    cardDatabase.find(c => c.id === 'e3'),
+    cardDatabase.find(c => c.id === 'h1'),
+  ]);
+
   useEffect(() => {
     const storedName = localStorage.getItem("abyssPlayerName");
-    if (storedName) {
-      setPlayerName(storedName);
-    }
+    if (storedName) setPlayerName(storedName);
+    const t = setTimeout(() => setMounted(true), 30);
+    return () => clearTimeout(t);
   }, []);
 
+
+  const spawnDamageNumber = (ref, value, color = '#f87171') => {
+    const el = ref.current;
+    if (!el) return;
+    const span = document.createElement('span');
+    span.textContent = `-${value}`;
+    span.style.cssText = `
+      position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+      color:${color}; font-size:1.6rem; font-weight:900;
+      text-shadow:0 0 8px ${color}, 0 2px 4px #000;
+      pointer-events:none; white-space:nowrap; z-index:999;
+    `;
+    el.style.position = 'relative';
+    el.appendChild(span);
+    span.animate(
+      [
+        { opacity: 1, transform: 'translateX(-50%) translateY(0px)'   },
+        { opacity: 0, transform: 'translateX(-50%) translateY(-50px)' },
+      ],
+      { duration: 900, easing: 'ease-out', fill: 'forwards' }
+    ).onfinish = () => span.remove();
+  };
+
+  const shakeElement = (ref) => {
+    ref.current?.animate(
+      [
+        { transform: 'translateX(0px)'   },
+        { transform: 'translateX(-12px)' },
+        { transform: 'translateX(12px)'  },
+        { transform: 'translateX(-8px)'  },
+        { transform: 'translateX(8px)'   },
+        { transform: 'translateX(-4px)'  },
+        { transform: 'translateX(0px)'   },
+      ],
+      { duration: 400, easing: 'ease-out' }
+    );
+  };
+
+ 
+  const hitFlashEnemy = (ref) => {
+    ref.current?.animate(
+      [
+        { filter: 'brightness(1) saturate(1)' },
+        { filter: 'brightness(3) saturate(0) sepia(1) hue-rotate(310deg)' },
+        { filter: 'brightness(1) saturate(1)' },
+      ],
+      { duration: 350, easing: 'ease-out' }
+    );
+  };
+
+ 
+  const shakePlayer = (ref) => {
+    ref.current?.animate(
+      [
+        { transform: 'translateY(0px)',  filter: 'brightness(1)'   },
+        { transform: 'translateY(-6px)', filter: 'brightness(2) hue-rotate(310deg)' },
+        { transform: 'translateY(6px)',  filter: 'brightness(1.5)' },
+        { transform: 'translateY(-4px)', filter: 'brightness(1)'   },
+        { transform: 'translateY(0px)',  filter: 'brightness(1)'   },
+      ],
+      { duration: 450, easing: 'ease-out' }
+    );
+  };
+
   const tutorialSteps = [
-    {
-      title: "Alerta de Proximidad",
-      text: `¡Atención, ${playerName}! Una Anomalía Menor ha bloqueado el acceso al primer nivel. Prepárate para el combate.`,
-      action: "next" // Solo botón de siguiente
-    },
-    {
-      title: "Fase de Ataque",
-      text: "Tu núcleo de energía está estable. Selecciona la carta 'Golpe Sombrío' de tu mano para neutralizar la amenaza.",
-      action: "wait" // Espera a que el jugador haga clic en la carta
-    },
-    {
-      title: "Impacto Confirmado",
-      text: "¡Impacto directo! La anomalía ha sido destruida y el camino está despejado. Excelente trabajo, cazador.",
-      action: "finish" // Botón para ir a la siguiente historia
-    }
+    { speaker: "Guía Táctica", text: `¡Atención, ${playerName}! Una Anomalía ha bloqueado el acceso. Tiene 100 HP. Tu Núcleo Vital inicia con 50 HP.`, action: "next" },
+    { speaker: "Guía Táctica", text: "Tienes 10 Puntos de Energía. Úsalos sabiamente. Las Habilidades y Definitivas están bloqueadas en este entrenamiento.", action: "next" },
+    { speaker: "Guía Táctica", text: "¡Ataca o defiéndete! Juega tus cartas. Cuando termines, haz clic en 'Terminar Turno' para que la anomalía contraataque.", action: "play" },
+    { speaker: "Sistema",      text: "¡Anomalía neutralizada! Has dominado el combate táctico. El camino al nivel 1 está abierto.", action: "finish" },
   ];
 
   const currentStepData = tutorialSteps[step];
 
-  // Función que se ejecuta cuando el jugador hace clic en la carta brillante
-  const handlePlayCard = () => {
-    if (step === 1) {
-      setMonsterHp(0); // La anomalía muere
-      setStep(2);      // Avanzamos al último diálogo
+  useEffect(() => {
+    clearInterval(intervalRef.current);
+    setDisplayText("");
+    setIsTyping(true);
+    let i = 0;
+    const fullText = currentStepData.text;
+    intervalRef.current = setInterval(() => {
+      i++;
+      setDisplayText(fullText.slice(0, i));
+      if (i >= fullText.length) { clearInterval(intervalRef.current); setIsTyping(false); }
+    }, 28);
+    return () => clearInterval(intervalRef.current);
+  }, [step]); 
+
+  const skipTyping = () => {
+    if (isTyping) {
+      clearInterval(intervalRef.current);
+      setDisplayText(currentStepData.text);
+      setIsTyping(false);
     }
   };
 
+
+  const handlePlayCard = (card, index) => {
+    if (step !== 2 || isEnemyTurn) return;
+    setSystemMessage("");
+
+    if (card.type === "habilidad" || card.type === "definitiva") {
+      setSystemMessage("Mecánica bloqueada en el tutorial. Usa Ataques o Escudos.");
+      return;
+    }
+    if (energy < card.cost) { setSystemMessage("Energía Insuficiente."); return; }
+
+    setEnergy(prev => prev - card.cost);
+    const newHand = hand.filter((_, i) => i !== index);
+
+    if (card.type === "ataque") {
+      const newHp = Math.max(0, monsterHp - card.effectValue);
+      setMonsterHp(newHp);
+     
+      shakeElement(enemyRef);
+      hitFlashEnemy(enemyRef);
+      spawnDamageNumber(enemyRef, card.effectValue, '#f87171');
+      setShowImpact(true);
+      setTimeout(() => setShowImpact(false), 450);
+      setHand(newHand);
+      if (newHp === 0) setStep(3);
+    } else if (card.type === "defensa") {
+      setPlayerShield(prev => prev + card.effectValue);
+      setSystemMessage(`Escudo activado: +${card.effectValue} Defensa.`);
+      setHand(newHand);
+    }
+  };
+
+
+  const handleEndTurn = () => {
+    if (isEnemyTurn || step !== 2) return;
+    setIsEnemyTurn(true);
+    setSystemMessage("Turno Enemigo: La anomalía se abalanza sobre ti...");
+    setTimeout(() => {
+      const enemyDamage = 25;
+      const damageTaken = Math.max(0, enemyDamage - playerShield);
+      const newHp = Math.max(0, playerHp - damageTaken);
+
+      
+      enemyRef.current?.animate(
+        [
+          { transform: 'translateX(0px)  scale(1)'    },
+          { transform: 'translateX(-80px) scale(1.15)' },
+          { transform: 'translateX(0px)  scale(1)'    },
+        ],
+        { duration: 500, easing: 'ease-in-out' }
+      );
+
+    
+      setTimeout(() => {
+        if (damageTaken > 0) {
+          shakePlayer(playerHudRef);
+          spawnDamageNumber(playerHudRef, damageTaken, '#fb923c');
+        }
+        setPlayerHp(newHp);
+        setPlayerShield(0);
+        if (newHp > 0) {
+          setSystemMessage(`Recibiste ${damageTaken} de daño. ¡Tu turno, acábala!`);
+          setEnergy(10);
+          setIsEnemyTurn(false);
+          setHand(prev => [...prev, cardDatabase.find(c => c.id === 'a5')]);
+        } else {
+          setSystemMessage("Tu núcleo fue destruido... (Reiniciando tutorial)");
+          setTimeout(() => window.location.reload(), 2000);
+        }
+      }, 400);
+    }, 1100);
+  };
+
+  const speakerColor = isEnemyTurn ? 'text-red-400' : 'text-sky-400';
+
   return (
-    <main className="min-h-screen bg-slate-950 flex flex-col items-center justify-between p-8 relative overflow-hidden">
-      {/* FONDO OSCURO */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-red-950/20 via-slate-950 to-black pointer-events-none"></div>
+    <main
+      className={`h-screen w-full flex flex-col relative overflow-hidden bg-slate-900 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+      onClick={skipTyping}
+    >
 
-      {/* ÁREA DEL ENEMIGO (La Anomalía) */}
-      <div className="relative z-10 flex flex-col items-center mt-12 transition-all duration-500">
-        <div className={`w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-red-900 flex items-center justify-center shadow-[0_0_30px_rgba(153,27,27,0.5)] transition-all duration-700 ${monsterHp === 0 ? 'opacity-0 scale-50 blur-xl' : 'animate-pulse bg-red-950/50'}`}>
-          <span className="text-red-500 font-bold tracking-widest uppercase">Anomalía</span>
-        </div>
-        
-        {/* Barra de Vida del Enemigo */}
-        <div className={`w-48 h-4 bg-slate-900 border border-slate-700 mt-4 rounded overflow-hidden transition-opacity ${monsterHp === 0 ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="h-full bg-red-600 transition-all duration-500" style={{ width: `${(monsterHp / 15) * 100}%` }}></div>
-        </div>
-        <p className={`text-slate-400 text-sm mt-1 font-bold ${monsterHp === 0 ? 'opacity-0' : 'opacity-100'}`}>HP: {monsterHp} / 15</p>
+      <div className="absolute inset-0 z-0">
+        <img src="/calabozo.png" className="w-full h-full object-cover opacity-50" alt="Fondo" />
+    
+        <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-slate-950/30" />
       </div>
 
-      {/* CUADRO DE DIÁLOGO DEL TUTORIAL (Centrado) */}
-      <div className={`z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl p-6 rounded-lg ${styles.tutorialBox}`}>
-        <h2 className="text-red-400 text-lg font-bold uppercase tracking-widest border-b border-red-900/50 pb-2 mb-4">
-          [ Sistema ] - {currentStepData.title}
-        </h2>
-        <p className="text-white text-xl mb-6">
-          {currentStepData.text}
-        </p>
+
+      {showImpact && <div className={styles.impactFlash} />}
+
+
+      <div className="relative z-10 w-full max-w-6xl mx-auto flex justify-between items-start px-4 md:px-8 pt-6">
+
+
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className={styles.statBox}>
+            <p className="text-sky-400 font-bold uppercase tracking-widest text-xs mb-1">Energía</p>
+            <div className="flex items-end gap-2">
+              <span className="text-4xl font-black text-white">{energy}</span>
+              <span className="text-slate-400 font-bold mb-1">/ 10</span>
+            </div>
+          </div>
+
+          <div ref={playerHudRef} className={`${styles.statBoxGreen} relative`}>
+            <p className="text-green-400 font-bold uppercase tracking-widest text-xs mb-1">Núcleo Vital</p>
+            <div className="flex items-end gap-2">
+              <span className="text-4xl font-black text-white">{playerHp}</span>
+              <span className="text-slate-400 font-bold mb-1">/ 50</span>
+            </div>
+            {playerShield > 0 && (
+              <div className="absolute -top-3 -right-3 bg-sky-600 border-2 border-white text-white font-black px-3 py-1 rounded-full shadow-lg text-sm animate-bounce">
+                +{playerShield}
+              </div>
+            )}
+          </div>
+        </div>
+
+
+        <div className={`${styles.enemyWrapper} ${monsterHp === 0 ? styles.dead : ''}`}>
+          <img
+            ref={enemyRef}
+            src="/enemigos/FR_071_BabyDoll.png"   
+            alt="Anomalía"
+            className={styles.enemyImg}
+            onError={(e) => {
+              
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'flex';
+            }}
+          />
+          
+          <div
+            style={{ display: 'none' }}
+            className="w-32 h-32 rounded-full bg-red-950/50 border-4 border-red-900 flex items-center justify-center shadow-[0_0_30px_rgba(153,27,27,0.5)] animate-pulse"
+          >
+            <span className="text-red-500 font-bold tracking-widest uppercase text-xs text-center">Anomalía</span>
+          </div>
+
         
-        <div className="flex justify-end">
-          {currentStepData.action === "next" && (
-            <button 
-              onClick={() => setStep(step + 1)}
-              className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded border border-slate-600 uppercase tracking-wider transition-all"
-            >
-              Entendido
-            </button>
-          )}
-          {currentStepData.action === "finish" && (
-            <button 
-              onClick={() => router.push('#')} // Redirige a la siguiente parte de la historia
-              className="bg-red-900 hover:bg-red-800 text-white font-bold py-2 px-6 rounded border border-red-700 uppercase tracking-wider transition-all"
-            >
-              Continuar
-            </button>
-          )}
+          <div className={styles.hpTrack}>
+            <div className={styles.hpFill} style={{ width: `${(monsterHp / 100) * 100}%` }} />
+          </div>
+          <p className="text-white text-xs font-bold tracking-wider">HP: {monsterHp} / 100</p>
         </div>
       </div>
 
-      {/* LA MANO DEL JUGADOR */}
-      <div className="relative z-20 flex gap-4 flex-wrap justify-center mb-8 w-full max-w-5xl">
-        
-        {/* Carta 1: La que el jugador DEBE usar */}
-        <div onClick={handlePlayCard} className={step === 1 ? styles.highlightCard : styles.dimmedCard}>
-          <GameCard 
-            name="Golpe Sombrío" 
-            type="ataque" 
-            cost={1} 
-            effectValue={15} 
-            description="Causa 15 puntos de daño directo a la anomalía."
-          />
+
+      <div className="flex-1" />
+
+
+      <div className="relative z-20 w-full max-w-6xl mx-auto px-4 md:px-8">
+        {step === 2 && (
+          <div className="flex justify-end mb-3">
+            <button
+              onClick={(e) => { e.stopPropagation(); handleEndTurn(); }}
+              disabled={isEnemyTurn}
+              className={`font-bold py-2 px-7 rounded uppercase tracking-widest text-sm ${isEnemyTurn ? styles.btnEndTurnDisabled : styles.btnEndTurn}`}
+            >
+              Terminar Turno
+            </button>
+          </div>
+        )}
+
+        <div className="flex gap-3 flex-wrap justify-center mb-4">
+          {hand.map((card, index) => {
+            const isUsable = step === 2 && !isEnemyTurn && (card.type === "ataque" || card.type === "defensa");
+            return (
+              <div
+                key={index}
+                onClick={(e) => { e.stopPropagation(); handlePlayCard(card, index); }}
+                className={`transition-all duration-300 ${isUsable ? 'hover:-translate-y-4 cursor-pointer' : styles.dimmedCard}`}
+              >
+                <GameCard
+                  name={card.name}
+                  type={card.type}
+                  cost={card.cost}
+                  effectValue={card.effectValue}
+                  description={card.description}
+                />
+              </div>
+            );
+          })}
         </div>
-        
-        {/* Cartas 2 y 3: Oscurecidas porque el sistema no deja usarlas aún */}
-        <div className={styles.dimmedCard}>
-          <GameCard 
-            name="Égida Abisal" 
-            type="defensa" 
-            cost={2} 
-            effectValue={20} 
-            description="Bloquea 20 puntos de daño durante este turno."
-          />
-        </div>
-        
-        <div className={styles.dimmedCard}>
-          <GameCard 
-            name="Poción de Éter" 
-            type="curacion" 
-            cost={1} 
-            effectValue={25} 
-            description="Restaura 25 puntos de salud de tu núcleo."
-          />
+      </div>
+
+
+      <div
+        className={`relative z-30 w-full max-w-5xl mx-auto px-4 md:px-8 pb-4 md:pb-6`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={isEnemyTurn ? styles.dialogBoxEnemy : styles.dialogBox}
+             style={{ padding: '24px 32px 28px 32px', position: 'relative' }}>
+
+          {/* Nameplate */}
+          <div className={`absolute -top-5 left-8 px-6 py-1 ${isEnemyTurn ? styles.namePlateEnemy : styles.namePlate}`}>
+            <span className={`${fuenteHistoria.className} font-bold text-lg tracking-widest ${speakerColor} drop-shadow-[0_0_5px_rgba(56,189,248,0.8)]`}>
+              {currentStepData.speaker}
+            </span>
+          </div>
+
+          <p className="text-slate-200 text-xl md:text-2xl leading-relaxed mt-3 mb-4 min-h-14">
+            {displayText}
+            {isTyping && <span className={styles.cursor}>▍</span>}
+          </p>
+
+
+          {systemMessage && (
+            <p className={`font-bold text-sm mb-3 ${isEnemyTurn ? 'text-red-400 animate-pulse' : 'text-yellow-400'}`}>
+              {systemMessage}
+            </p>
+          )}
+
+
+          {!isTyping && (
+            <div className="flex justify-end gap-3">
+              {currentStepData.action === "next" && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); setStep(step + 1); }}
+                  className="bg-slate-800 text-sky-300 font-bold py-2 px-6 rounded border border-sky-700 uppercase tracking-wider text-sm hover:bg-slate-700 transition-all"
+                >
+                  Entendido ▸
+                </button>
+              )}
+              {currentStepData.action === "finish" && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); router.push('/grimorio'); }}
+                  className="bg-sky-900 text-sky-100 font-bold py-2 px-6 rounded border border-sky-700 uppercase tracking-wider text-sm hover:bg-sky-800 transition-all"
+                >
+                  Continuar Historia ▸
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </main>
