@@ -1,19 +1,17 @@
-/* src/app/intro/Intro.module.css */
 
-/* El fondo oscuro general */
 .bgOverlay {
   background-color: #0f172a;
 }
 
-/* La caja de diálogo inferior estilo Visual Novel */
+
 .dialogBox {
-  background-color: rgba(15, 23, 42, 0.85); /* Fondo muy oscuro pero transparente */
-  border: 3px solid #38bdf8; /* Borde cyan estilo la imagen */
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); /* Resplandor cyan sutil */
+  background-color: rgba(15, 23, 42, 0.85);
+  border: 3px solid #38bdf8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); 
   border-radius: 12px;
 }
 
-/* La placa del nombre superpuesta */
+
 .namePlate {
   background-color: rgba(15, 23, 42, 0.95);
   border: 2px solid #38bdf8;
@@ -21,7 +19,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Estilos dinámicos para la caja de texto (Input) */
+
 .inputName {
   background-color: rgba(0, 0, 0, 0.6);
   border: 1px solid #334155;
@@ -33,7 +31,7 @@
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
-/* Cursor parpadeante del typewriter */
+
 .cursor {
   display: inline-block;
   color: #38bdf8;
@@ -46,13 +44,13 @@
   50%       { opacity: 0; }
 }
 
-/* Botones */
+
 .btnConfirm {
   box-shadow: 0 4px 12px rgba(56, 189, 248, 0.1);
   transition: all 0.3s ease;
 }
 
 .btnConfirm:hover {
-  background-color: #0284c7; /* Azul más fuerte al pasar el mouse */
+  background-color: #0284c7; 
   transform: translateY(-2px);
 }

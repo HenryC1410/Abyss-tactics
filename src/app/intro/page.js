@@ -18,10 +18,10 @@ export default function IntroVisualNovel() {
   const [error, setError] = useState(false);
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [mounted, setMounted] = useState(false); // fade-in de entrada
+  const [mounted, setMounted] = useState(false); 
   const intervalRef = useRef(null);
 
-  // Fade-in al entrar a la página
+  a
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 30);
     return () => clearTimeout(t);
@@ -30,7 +30,7 @@ export default function IntroVisualNovel() {
   const storyFrames = [
     {
       type: "input",
-      speaker: "Sistema",
+      speaker: "Gremio de Cazadores",
       text: "El Rey ha caído gravemente enfermo. La única cura requiere un ingrediente botánico que solo florece en las profundidades del Abismo. Cazador, ¿cómo debemos registrarte en el manifiesto?",
     },
     {
@@ -64,7 +64,7 @@ export default function IntroVisualNovel() {
 
   
   const nextFrame = () => {
-    // Si está escribiendo, mostrar todo de golpe
+    
     if (isTyping) {
       clearInterval(intervalRef.current);
       setDisplayText(frame.text);
@@ -110,26 +110,25 @@ export default function IntroVisualNovel() {
         />
       </div>
 
-      {/* 3. CAJA DE DIÁLOGO */}
       <div
         className={`relative z-20 w-full max-w-5xl mx-auto p-6 md:p-8 mt-auto mb-2 md:mb-6 transition-opacity duration-300 ${styles.dialogBox} ${isVisible ? 'opacity-100' : 'opacity-0'}`}
-        onClick={(e) => e.stopPropagation()} // los clicks dentro del cuadro no propagan
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Placa del nombre */}
+
         <div className={`absolute -top-6 left-6 md:left-10 px-8 py-1 ${styles.namePlate} `}>
           <span className={`${fuenteHistoria.className} text-sky-400 font-bold text-xl md:text-2xl tracking-widest drop-shadow-[0_0_5px_rgba(56,189,248,0.8)]`}>
             {frame.speaker}
           </span>
         </div>
 
-        {/* Texto con typewriter */}
+
         <p className={` text-slate-200 text-2xl md:text-3xl leading-relaxed mt-4 mb-6 min-h-25`}>
           {displayText}
-          {/* Cursor parpadeante mientras escribe */}
+
           {isTyping && <span className={styles.cursor}>▍</span>}
         </p>
 
-        {/* Input o botón — solo visibles cuando terminó de escribir */}
+
         {!isTyping && frame.type === "input" && (
           <div className="flex flex-col sm:flex-row gap-4 justify-end mt-4">
             <div className="flex flex-col w-full sm:max-w-xs">
