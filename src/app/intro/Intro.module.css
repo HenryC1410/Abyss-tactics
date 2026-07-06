@@ -1,47 +1,58 @@
+/* src/app/intro/Intro.module.css */
 
-.bgOverlay {  
-  background: radial-gradient(ellipse at center, #0f172a, #000000, #000000);
-  opacity: 0.8;
+/* El fondo oscuro general */
+.bgOverlay {
+  background-color: #0f172a;
 }
 
+/* La caja de diálogo inferior estilo Visual Novel */
 .dialogBox {
-  background-color: rgba(3, 7, 18, 0.8);
-  border: 1px solid #334155;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(4px);
+  background-color: rgba(15, 23, 42, 0.85); /* Fondo muy oscuro pero transparente */
+  border: 3px solid #38bdf8; /* Borde cyan estilo la imagen */
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); /* Resplandor cyan sutil */
+  border-radius: 12px;
 }
 
+/* La placa del nombre superpuesta */
+.namePlate {
+  background-color: rgba(15, 23, 42, 0.95);
+  border: 2px solid #38bdf8;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilos dinámicos para la caja de texto (Input) */
 .inputName {
-  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.6);
   border: 1px solid #334155;
   transition: all 0.3s ease;
 }
 
 .inputName:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
+/* Cursor parpadeante del typewriter */
+.cursor {
+  display: inline-block;
+  color: #38bdf8;
+  animation: blink 0.7s step-start infinite;
+  margin-left: 2px;
+}
 
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Botones */
 .btnConfirm {
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.1);
   transition: all 0.3s ease;
 }
 
 .btnConfirm:hover {
-  background-color: #991b1b;
-  cursor: pointer;
+  background-color: #0284c7; /* Azul más fuerte al pasar el mouse */
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
-}
-
-.btnNext {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-}
-
-.btnNext:hover {
-  background-color: #334155;
-  transform: translateY(-2px);
-  cursor: pointer;
 }

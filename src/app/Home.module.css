@@ -1,40 +1,61 @@
+/* ── FONDO ── */
+.bgOverlay {
+  background-color: #0f172a; /* mismo base que la intro */
+}
 
+/* ── TÍTULO ── */
 .titleGlow {
   font-size: 5rem;
   line-height: 1;
-  text-shadow: 0 10px 10px rgba(0, 0, 0, 0.9);
-  margin-bottom: -4rem; 
+  text-shadow:
+    0 0 20px rgba(56, 189, 248, 0.4),   /* resplandor cyan igual que la intro */
+    0 10px 10px rgba(0, 0, 0, 0.9);
+  margin-bottom: -4rem;
   z-index: 10;
   position: relative;
   pointer-events: none;
 }
 
-
 @media (min-width: 768px) {
   .titleGlow {
     font-size: 7rem;
-    margin-bottom: -6rem; 
+    margin-bottom: -6rem;
   }
 }
 
-
+/* ── BOTÓN INICIAR ── mismo estilo que el cuadro de diálogo de la intro */
 .btnStart {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  background-color: rgba(15, 23, 42, 0.85);
+  color: #38bdf8;
+  border: 2px solid #38bdf8;
+  box-shadow:
+    0 0 12px rgba(56, 189, 248, 0.2),
+    0 5px 15px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
 }
 
 .btnStart:hover {
-  box-shadow: 0 10px 25px rgba(153, 27, 27, 0.6); 
+  background-color: rgba(2, 132, 199, 0.25);
+  box-shadow:
+    0 0 24px rgba(56, 189, 248, 0.5),
+    0 10px 25px rgba(0, 0, 0, 0.6);
   transform: translateY(-4px);
+  color: #fff;
 }
 
-
+/* ── BOTÓN RANKING ── tono más apagado, igual que el botón secundario de la intro */
 .btnRanking {
+  background-color: rgba(15, 23, 42, 0.7);
+  color: #94a3b8;
+  border: 2px solid #334155;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
 }
 
 .btnRanking:hover {
+  background-color: rgba(30, 41, 59, 0.9);
+  border-color: #475569;
+  color: #cbd5e1;
   box-shadow: 0 10px 25px rgba(30, 41, 59, 0.8);
   transform: translateY(-4px);
 }
