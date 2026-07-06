@@ -21,7 +21,7 @@ export default function IntroVisualNovel() {
   const [mounted, setMounted] = useState(false); 
   const intervalRef = useRef(null);
 
-  a
+  
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 30);
     return () => clearTimeout(t);
