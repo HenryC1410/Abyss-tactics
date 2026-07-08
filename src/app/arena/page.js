@@ -212,7 +212,7 @@ export default function ArenaBattle() {
     cargarEnemigo(1);
     const t = setTimeout(() => setMounted(true), 30);
     return () => clearTimeout(t);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); 
 
   // ── Cronómetro ───────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -231,9 +231,8 @@ export default function ArenaBattle() {
       localStorage.removeItem("abyssProfile");
       setTimeout(() => router.push('/'), 3500);
     }
-  }, [playerHp]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [playerHp]); 
 
-  // ── Victoria (enemigo muere) ──────────────────────────────────────────────────
   useEffect(() => {
     if (monsterHp !== 0 || isTransitioning || isGameOver) return;
     setIsTransitioning(true);
@@ -257,9 +256,8 @@ export default function ArenaBattle() {
       localStorage.setItem("abyssFinalTime", tiempoS);
       setTimeout(() => router.push('/epilogo'), 3500);
     }
-  }, [monsterHp]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [monsterHp]); 
 
-  // ── Robar cartas ─────────────────────────────────────────────────────────────
   const robarCartas = useCallback((cantidad = 4, nivelActual = level) => {
     const mult = nivelActual - 1;
     const nuevaMano = Array.from({ length: cantidad }, () => {
@@ -282,7 +280,7 @@ export default function ArenaBattle() {
       robarCartas(4, level);
   }, [monsterHp, isEnemyTurn, isTransitioning, isGameOver, playerHp, hand.length, robarCartas, level]);
 
-  // ── Jugar carta ──────────────────────────────────────────────────────────────
+
   const handlePlayCard = (card, index) => {
     if (isEnemyTurn || isGameOver || isTransitioning) return;
     if (energy < card.cost) { setSystemMessage("Energía Insuficiente."); return; }
@@ -296,7 +294,7 @@ export default function ArenaBattle() {
     if (isAttack) {
       const critico = Math.random() > 0.5;
       const daño = critico ? card.effectValue : Math.floor(card.effectValue / 2);
-      // ── Web Animations: impacto en enemigo ──
+
       shakeEnemy();
       hitFlashEnemy();
       spawnDamageNumber(enemyRef, daño, '#f87171');
@@ -310,7 +308,7 @@ export default function ArenaBattle() {
 
     } else if (card.type === 'defensa') {
       setPlayerShield(prev => prev + card.effectValue);
-      // ── Web Animations: brillo azul en HUD ──
+
       playerHudRef.current?.animate(
         [
           { filter: 'brightness(1)' },
@@ -335,20 +333,20 @@ export default function ArenaBattle() {
     }
   };
 
-  // ── Terminar turno ───────────────────────────────────────────────────────────
+  
   const endTurn = async () => {
     if (isEnemyTurn || monsterHp === 0 || isGameOver || isTransitioning) return;
     setIsEnemyTurn(true);
     setSystemMessage("Turno del Enemigo...");
 
-    // El enemigo se lanza hacia el jugador
+
     await enemyLunge();
 
     const poderoso  = Math.random() > 0.5;
     const bruto     = poderoso ? monsterAttack : Math.floor(monsterAttack / 2);
     const final     = Math.max(0, bruto - playerShield);
 
-    // Impacto en el jugador
+
     if (final > 0) {
       shakePlayer();
       spawnDamageNumber(playerHudRef, final, '#fb923c');
@@ -370,23 +368,22 @@ export default function ArenaBattle() {
     }, 1400);
   };
 
-  // ── RENDER ───────────────────────────────────────────────────────────────────
+
   return (
     <main className={`h-screen w-full flex flex-col relative overflow-hidden bg-slate-900 transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
 
-      {/* ── FLASH DE IMPACTO (Web Animations la maneja, esto es el overlay de pantalla) */}
+      
       {impactType && (
         <div className={`${styles.impactFlash} ${impactType === 'red' ? styles.impactFlashRed : styles.impactFlashBlue}`} />
       )}
 
-      {/* ── FONDO ──────────────────────────────────────────────────────────────
-          👉 Mismo fondo que intro/grimorio: /public/calabozo.png             */}
+      
       <div className="absolute inset-0 z-0">
         <img src="/calabozo.png" className="w-full h-full object-cover opacity-50" alt="Fondo" />
         <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-slate-950/40" />
       </div>
 
-      {/* ── HEADER ─────────────────────────────────────────────────────────── */}
+      
       <header className="relative z-20 flex justify-between items-center px-4 md:px-8 pt-5">
         <span className={styles.headerPill}>Nivel {level} / 5</span>
         <span className={`${fuenteHistoria.className} text-white text-lg md:text-2xl tracking-widest opacity-60`}>
@@ -397,14 +394,11 @@ export default function ArenaBattle() {
         </span>
       </header>
 
-      {/* ── ZONA CENTRAL: ENEMIGO ──────────────────────────────────────────── */}
+     
       <div className="relative z-10 flex flex-col items-center justify-center flex-1 gap-4 pointer-events-none">
 
         <div className={`${styles.enemyWrapper} ${monsterHp === 0 ? styles.dead : ''}`}>
 
-          {/* ── IMAGEN DEL ENEMIGO ──────────────────────────────────────────
-              👉 Las rutas están en el objeto ENEMY_SPRITES arriba del archivo.
-                 Coloca tus PNG en /public/enemigos/nivel1.png … nivel5.png   */}
           <img
             ref={enemyRef}
             src={enemySprite}
@@ -415,7 +409,7 @@ export default function ArenaBattle() {
               if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
             }}
           />
-          {/* Placeholder si el PNG no existe aún */}
+
           <div style={{ display: 'none' }}
             className="w-40 h-40 rounded-full bg-red-950/50 border-4 border-red-900 flex items-center justify-center shadow-[0_0_30px_rgba(153,27,27,0.5)] animate-pulse">
             <span className="text-red-500 font-bold uppercase text-xs text-center tracking-widest px-3">
@@ -423,7 +417,7 @@ export default function ArenaBattle() {
             </span>
           </div>
 
-          {/* Barra de vida */}
+
           <div className={styles.hpTrack}>
             <div className={styles.hpFill} style={{ width: `${(monsterHp / monsterMaxHp) * 100}%` }} />
           </div>
@@ -435,7 +429,7 @@ export default function ArenaBattle() {
           </p>
         </div>
 
-        {/* ── MENSAJE DEL SISTEMA (sin tocar, como pediste) ─────────────── */}
+
         <div className="w-full max-w-xl px-4 pointer-events-auto">
           <div className={styles.systemBox}>
             <p className={`text-sm md:text-lg font-bold tracking-wider ${isGameOver ? 'text-red-500' : isEnemyTurn ? 'text-red-400' : 'text-sky-300'}`}>
@@ -445,11 +439,9 @@ export default function ArenaBattle() {
         </div>
       </div>
 
-      {/* ── TABLERO INFERIOR ───────────────────────────────────────────────── */}
       <div className="relative z-30 w-full bg-slate-900/90 border-t border-slate-700 backdrop-blur-sm pt-3 pb-4 px-4 md:px-8">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 md:gap-2">
 
-          {/* Stats del jugador */}
           <div className="flex gap-2 w-full md:w-auto justify-center md:justify-start order-1">
             <div className={styles.statBox}>
               <p className="text-sky-400 font-bold uppercase tracking-widest text-xs mb-1">Energía</p>
@@ -475,7 +467,7 @@ export default function ArenaBattle() {
             </div>
           </div>
 
-          {/* Mano de cartas */}
+
           <div className="flex gap-1 md:gap-3 justify-center relative z-40 order-3 md:order-2 -mt-10 md:-mt-16 scale-[0.75] md:scale-[0.85] origin-bottom">
             {hand.map((card, index) => (
               <div

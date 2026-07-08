@@ -13,9 +13,7 @@ export default function RankingPage() {
   const [scores, setScores] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ==========================================
-  // CONEXIÓN A INDEXEDDB Y EXTRACCIÓN DE DATOS
-  // ==========================================
+
   useEffect(() => {
     if (typeof window === "undefined" || !window.indexedDB) {
       setLoading(false);
@@ -27,7 +25,7 @@ export default function RankingPage() {
     request.onsuccess = (event) => {
       const db = event.target.result;
       
-      // Si la tabla no existe aún
+
       if (!db.objectStoreNames.contains("scores")) {
         setLoading(false);
         return;
@@ -40,9 +38,7 @@ export default function RankingPage() {
       getAllRequest.onsuccess = () => {
         let data = getAllRequest.result;
         
-        // LÓGICA DE ORDENAMIENTO (RANKING)
-        // 1. Mayor nivel alcanzado va primero.
-        // 2. Si empatan en nivel, el menor tiempo va primero.
+
         data.sort((a, b) => {
           if (b.nivel !== a.nivel) {
             return b.nivel - a.nivel; 
@@ -63,7 +59,7 @@ export default function RankingPage() {
 
   return (
     <main className="min-h-screen bg-slate-950 flex flex-col items-center py-12 px-4 md:px-8 relative overflow-hidden">
-      {/* Fondo oscuro y místico */}
+
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black pointer-events-none"></div>
 
       <div className="relative z-10 w-full max-w-5xl flex flex-col items-center">
@@ -74,7 +70,7 @@ export default function RankingPage() {
           Registros del Grimorio Táctico
         </p>
 
-        {/* CONTENEDOR DE LA TABLA */}
+
         <div className="w-full bg-slate-900/80 border border-slate-700 rounded-lg shadow-2xl overflow-hidden backdrop-blur-sm mb-8">
           
           <div className="overflow-x-auto">
@@ -139,7 +135,6 @@ export default function RankingPage() {
           </div>
         </div>
 
-        {/* BOTÓN VOLVER */}
         <button 
           onClick={() => router.push('/')}
           className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-10 rounded border border-slate-600 uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)] hover:-translate-y-1"

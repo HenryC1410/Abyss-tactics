@@ -62,7 +62,7 @@ export default function EpilogoScene() {
 
   const frame = storyFrames[currentFrame];
 
-  // ── Typewriter ────────────────────────────────────────────────────────────
+
   useEffect(() => {
     clearInterval(intervalRef.current);
     setDisplayText("");
@@ -78,9 +78,7 @@ export default function EpilogoScene() {
       }
     }, 28);
     return () => clearInterval(intervalRef.current);
-  }, [currentFrame, playerName]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ── Click en escena: completar texto o avanzar ────────────────────────────
+  }, [currentFrame, playerName]); 
   const handleAdvance = () => {
     if (isTyping) {
       clearInterval(intervalRef.current);
@@ -126,10 +124,6 @@ export default function EpilogoScene() {
         <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-slate-950/20" />
       </div>
 
-      {/* ── SPRITE DEL PERSONAJE ───────────────────────────────────────────────
-          👉 Coloca el PNG del personaje en /public/sprites/
-          Ejemplo: src="/sprites/guildmaster_victory.png"
-          Tamaño recomendado: fondo transparente, ~400-600px de ancho.       */}
       <div className="absolute bottom-0 left-10 z-30 pointer-events-none flex items-end">
         <img
           src="/P2.png"
@@ -139,7 +133,7 @@ export default function EpilogoScene() {
         />
       </div>
 
-      {/* ── CUADRO DE DIÁLOGO (igual que intro y grimorio) ─────────────────── */}
+
       <div
         className="relative z-20 w-full max-w-5xl mx-auto mb-2 md:mb-6"
         onClick={(e) => e.stopPropagation()}
@@ -149,20 +143,20 @@ export default function EpilogoScene() {
           style={{ padding: '24px 32px 28px 32px', position: 'relative', borderRadius: '12px' }}
         >
 
-          {/* Nameplate */}
+
           <div className={`absolute -top-6 left-6 md:left-10 px-8 py-1 ${styles.namePlate}`}>
             <span className={`${fuenteHistoria.className} font-bold text-xl md:text-2xl tracking-widest drop-shadow-[0_0_5px_rgba(56,189,248,0.8)] ${frame.speaker === 'Sistema' ? 'text-yellow-400' : 'text-sky-400'}`}>
               {frame.speaker}
             </span>
           </div>
 
-          {/* Texto con typewriter */}
+
           <p className="text-slate-200 text-2xl md:text-3xl leading-relaxed mt-4 mb-6 min-h-20">
             {displayText}
             {isTyping && <span className={styles.cursor}>▍</span>}
           </p>
 
-          {/* Botones — solo cuando termina de escribir */}
+ 
           {!isTyping && (
             <div className="flex justify-end gap-3">
               {!isLastFrame && (
